@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<property name="now" value="now()" />
+	<property name="sequenceUsuario" value="(select nextval ('gen_usuario'))" />
+	<property name="sequenceTipoVeiculo" value="(select nextval ('gen_tipoveiculo'))" />
+	<property name="sequenceTipoContato" value="(select nextval ('gen_tipocontato'))" />
+	<property name="sequenceTipoSexo" value="(select nextval ('gen_tiposexo'))" />
+	<property name="sequenceTipoDocumento" value="(select nextval ('gen_tipodocumento'))" />
+
+	<changeSet id="criar_tb_marca" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_marca" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_marca">
+
+			<column name="id_marca" type="numeric(18,0)" remarks="ID DA MARCA">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_marca" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)" remarks="DESCRICAO DA MARCA">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_marca" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_tipoveiculo" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_tipoveiculo" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_tipoveiculo">
+
+			<column name="id_tipoveiculo" type="numeric(18,0)" remarks="ID DO TIPO DE VEICULO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_tipoveiculo" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)"
+				remarks="DESCRICAO DO TIPO DE VEICULO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_tipoveiculo"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_modelo" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_modelo" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_modelo">
+
+			<column name="id_modelo" type="numeric(18,0)" remarks="ID DO MODELO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_modelo" />
+			</column>
+
+			<column name="cd_marca" type="numeric(18,0)" remarks="CODIGO DO ESTADO">
+				<constraints nullable="false" foreignKeyName="fk_tb_modelo_tb_marca"
+					references="tb_marca(id_marca)" />
+			</column>
+
+			<column name="cd_tipoveiculo" type="numeric(18,0)" remarks="CODIGO DO TIPO DE VEICULO">
+				<constraints nullable="false" foreignKeyName="fk_tb_modelo_tb_tipoveiculo"
+					references="tb_tipoveiculo(id_tipoveiculo)" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)" remarks="DESCRICAO DO MODELO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_modelo" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_tipodocumento" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_tipodocumento" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_tipodocumento">
+
+			<column name="id_tipodocumento" type="numeric(18,0)" remarks="ID DO TIPO DE DOCUMENTO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_tipodocumento" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(20)"
+				remarks="DESCRICAO DO TIPO DE DOCUMENTO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_tipodocumento"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_estado" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_estado" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_estado">
+
+			<column name="id_estado" type="numeric(18,0)" remarks="ID DO ESTADO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_estado" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)" remarks="DESCRICAO DO ESTADO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_sigla" type="varchar(2)" remarks="SIGLA DO ESTADO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_estado" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_cidade" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_cidade" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_cidade">
+
+			<column name="id_cidade" type="numeric(18,0)" remarks="ID DA CIDADE">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_cidade" />
+			</column>
+
+			<column name="cd_estado" type="numeric(18,0)" remarks="CODIGO DO ESTADO">
+				<constraints nullable="false" foreignKeyName="fk_tb_cidade_tb_estado"
+					references="tb_estado(id_estado)" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)" remarks="DESCRICAO DO ESTADO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_cidade" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_endereco" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_endereco" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_endereco">
+
+			<column name="id_endereco" type="numeric(18,0)" remarks="ID DO ENDERECO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_endereco" />
+			</column>
+
+			<column name="cd_cidade" type="numeric(18,0)" remarks="CODIGO DA CIDADE">
+				<constraints nullable="false" foreignKeyName="fk_tb_endereco_tb_cidade"
+					references="tb_cidade(id_cidade)" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)" remarks="DESCRICAO DO ENDERECO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_endereco" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_tiposexo" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_tiposexo" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_tiposexo">
+
+			<column name="id_tiposexo" type="numeric(18,0)" remarks="ID DO TIPO DE SEXO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_tiposexo" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(50)" remarks="DESCRICAO DO TIPO DE SEXO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_tiposexo" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_cliente" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_cliente" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_cliente">
+
+			<column name="id_cliente" type="numeric(18,0)" remarks="ID DO CLIENTE">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_cliente" />
+			</column>
+
+			<column name="cd_endereco" type="numeric(18,0)" remarks="CODIGO DO ENDERECO">
+				<constraints nullable="false" foreignKeyName="fk_tb_cliente_tb_endereco"
+					references="tb_endereco(id_endereco)" />
+			</column>
+
+			<column name="cd_tiposexo" type="numeric(18,0)" remarks="CODIGO DO TIPO DE SEXO">
+				<constraints nullable="false" foreignKeyName="fk_tb_cliente_tb_tiposexo"
+					references="tb_tiposexo(id_tiposexo)" />
+			</column>
+
+			<column name="tx_nome" type="varchar(80)" remarks="DESCRICAO DO NOME">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_nascimento" type="datetime" remarks="DATA DE NASCIMENTO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_cliente" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_documento" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_documento" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_documento">
+
+			<column name="id_documento" type="numeric(18,0)" remarks="ID DO DOCUMENTO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_documento" />
+			</column>
+
+			<column name="cd_tipodocumento" type="numeric(18,0)"
+				remarks="CODIGO DO TIPO DE DOCUMENTO">
+				<constraints nullable="false" foreignKeyName="fk_tb_documento_tb_tipodocumento"
+					references="tb_tipodocumento(id_tipodocumento)" />
+			</column>
+
+			<column name="cd_cliente" type="numeric(18,0)" remarks="CODIGO DO CLIENTE">
+				<constraints nullable="false" foreignKeyName="fk_tb_documento_tb_cliente"
+					references="tb_cliente(id_cliente)" />
+			</column>
+
+			<column name="tx_documento" type="varchar(30)" remarks="DESCRICAO DO DOCUMENTO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_documento"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_tipocontato" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_tipocontato" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_tipocontato">
+
+			<column name="id_tipocontato" type="numeric(18,0)" remarks="ID DO TIPO DE CONTATO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_tipocontato" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(20)"
+				remarks="DESCRICAO DO TIPO DE CONTATO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_tipocontato"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_contato" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_contato" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_contato">
+
+			<column name="id_contato" type="numeric(18,0)" remarks="ID DO CONTATO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_contato" />
+			</column>
+
+			<column name="cd_tipocontato" type="numeric(18,0)" remarks="CODIGO DO TIPO DE CONTATO">
+				<constraints nullable="false" foreignKeyName="fk_tb_contato_tb_tipocontato"
+					references="tb_tipocontato(id_tipocontato)" />
+			</column>
+
+			<column name="cd_cliente" type="numeric(18,0)" remarks="CODIGO DO CLIENTE">
+				<constraints nullable="false" foreignKeyName="fk_tb_contato_tb_cliente"
+					references="tb_cliente(id_cliente)" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(80)" remarks="DESCRICAO DO CONTATO">
+				<constraints nullable="true" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_contato" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_usuario" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_usuario" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_usuario">
+
+			<column name="id_usuario" type="numeric(18,0)" remarks="ID DO USUARIO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_usuario" />
+			</column>
+
+			<column name="tx_login" type="varchar(80)" remarks="LOGIN DO USUARIO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_senha" type="varchar(32)" remarks="SENHA DO USUARIO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_email" type="varchar(250)" remarks="EMAIL DO USUARIO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_cadastro" type="datetime" remarks="DATA DE CADASTRO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_manutencao" type="datetime" remarks="DATA DE MANUTENCAO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_usuario" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_veiculo" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_veiculo" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_veiculo">
+
+			<column name="id_veiculo" type="numeric(18,0)" remarks="ID DO VEICULO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_veiculo" />
+			</column>
+
+			<column name="cd_cliente" type="numeric(18,0)" remarks="CODIGO DO CLIENTE">
+				<constraints nullable="false" foreignKeyName="fk_tb_veiculo_tb_cliente"
+					references="tb_cliente(id_cliente)" />
+			</column>
+
+			<column name="cd_marca" type="numeric(18,0)" remarks="CODIGO DA MARCA">
+				<constraints nullable="false" foreignKeyName="fk_tb_veiculo_tb_marca"
+					references="tb_marca(id_marca)" />
+			</column>
+
+			<column name="cd_modelo" type="numeric(18,0)" remarks="CODIGO DO MODELO">
+				<constraints nullable="false" foreignKeyName="fk_tb_veiculo_tb_modelo"
+					references="tb_modelo(id_modelo)" />
+			</column>
+
+			<column name="tx_placa" type="varchar(8)" remarks="PLACA DO VEICULO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_motorista" type="varchar(80)" remarks="MOTORISTA DO VEICULO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_veiculo" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_nfe" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_nfe" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_nfe">
+
+			<column name="id_nfe" type="numeric(18,0)" remarks="ID DA NOTA">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_nfe" />
+			</column>
+
+			<column name="cd_veiculo" type="numeric(18,0)" remarks="CODIGO DO VEICULO">
+				<constraints nullable="false" foreignKeyName="fk_tb_nfe_tb_veiculo"
+					references="tb_veiculo(id_veiculo)" />
+			</column>
+
+			<column name="nr_nota" type="numeric(18,0)" remarks="NUMERO DA NOTA">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_verificacao" type="varchar(80)"
+				remarks="CODIGO DE VERIFICACAO DA NOTA">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_emissao" type="datetime" remarks="DATA DE EMISSAO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_nfe" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_nfeitem" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_nfeitem" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_nfeitem">
+
+			<column name="id_nfeitem" type="numeric(18,0)" remarks="ID DO ITEM DA NOTA">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_nfeitem" />
+			</column>
+
+			<column name="cd_nfe" type="numeric(18,0)" remarks="CODIGO DA NOTA">
+				<constraints nullable="false" foreignKeyName="fk_tb_nfeitem_tb_nfe"
+					references="tb_nfe(id_nfe)" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(100)" remarks="DESCRICAO DO ITEM DA NOTA">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="vl_unitario" type="numeric(18,2)"
+				remarks="VALOR UNITARIO DO ITEM DA NOTA">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="nr_quantidade" type="numeric(18,0)" remarks="QUANTIDADE DO ITEM DA NOTA">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_nfeitem" startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_ordemservico" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_ordemservico" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_ordemservico">
+
+			<column name="id_ordemservico" type="numeric(18,0)" remarks="ID DA ORDEM DE SERVICO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_ordemservico" />
+			</column>
+
+			<column name="cd_veiculo" type="numeric(18,0)" remarks="CODIGO DO VEICULO">
+				<constraints nullable="false" foreignKeyName="fk_tb_ordemservico_tb_veiculo"
+					references="tb_veiculo(id_veiculo)" />
+			</column>
+
+			<column name="nr_codigo" type="numeric(18,0)" remarks="CODIGO DA ORDEM DE SERVICO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_cadastro" type="datetime" remarks="DATA DE CADASTRO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_ordemservico"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="criar_tb_ordemservicoitem" author="jando_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_ordemservicoitem" />
+			</not>
+		</preConditions>
+		<createTable tableName="tb_ordemservicoitem">
+
+			<column name="id_ordemservicoitem" type="numeric(18,0)"
+				remarks="ID DO ITEM DA ORDEM DE SERVICO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_ordemservicoitem" />
+			</column>
+
+			<column name="cd_ordemservico" type="numeric(18,0)"
+				remarks="CODIGO DA ORDEM DE SERVICO">
+				<constraints nullable="false"
+					foreignKeyName="fk_tb_ordemservicoitem_tb_ordemservico" references="tb_ordemservico(id_ordemservico)" />
+			</column>
+
+			<column name="nr_quantidade" type="numeric(18,0)"
+				remarks="QUANTIDADE DO ITEM DA ORDEM DE SERVICO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_descricao" type="varchar(250)"
+				remarks="DESCRICAO DO ITEM DA ORDEM DE SERVICO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="vl_unitario" type="numeric(18,2)"
+				remarks="VALOR UNITARIO DO ITEM DA ORDEM DE SERVICO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<createSequence sequenceName="gen_ordemservicoitem"
+			startValue="1" />
+	</changeSet>
+
+	<changeSet id="carga_tb_tipodocumento" author="jando_server">
+
+		<insert tableName="tb_tipodocumento">
+			<column name="id_tipodocumento" valueComputed="${sequenceTipoDocumento}" />
+			<column name="tx_descricao" value="CPF" />
+		</insert>
+
+		<insert tableName="tb_tipodocumento">
+			<column name="id_tipodocumento" valueComputed="${sequenceTipoDocumento}" />
+			<column name="tx_descricao" value="CNPJ" />
+		</insert>
+
+		<insert tableName="tb_tipodocumento">
+			<column name="id_tipodocumento" valueComputed="${sequenceTipoDocumento}" />
+			<column name="tx_descricao" value="RG" />
+		</insert>
+
+	</changeSet>
+
+	<changeSet id="carga_tb_tiposexo" author="jando_server">
+
+		<insert tableName="tb_tiposexo">
+			<column name="id_tiposexo" valueComputed="${sequenceTipoSexo}" />
+			<column name="tx_descricao" value="MASCULINO" />
+		</insert>
+
+		<insert tableName="tb_tiposexo">
+			<column name="id_tiposexo" valueComputed="${sequenceTipoSexo}" />
+			<column name="tx_descricao" value="FEMININO" />
+		</insert>
+
+		<insert tableName="tb_tiposexo">
+			<column name="id_tiposexo" valueComputed="${sequenceTipoSexo}" />
+			<column name="tx_descricao" value="OUTRO" />
+		</insert>
+
+		<insert tableName="tb_tiposexo">
+			<column name="id_tiposexo" valueComputed="${sequenceTipoSexo}" />
+			<column name="tx_descricao" value="NÃO INFORMADO" />
+		</insert>
+
+	</changeSet>
+
+	<changeSet id="carga_tb_tipocontato" author="jando_server">
+
+		<insert tableName="tb_tipocontato">
+			<column name="id_tipocontato" valueComputed="${sequenceTipoContato}" />
+			<column name="tx_descricao" value="TELEFONE" />
+		</insert>
+
+		<insert tableName="tb_tipocontato">
+			<column name="id_tipocontato" valueComputed="${sequenceTipoContato}" />
+			<column name="tx_descricao" value="E-MAIL" />
+		</insert>
+
+		<insert tableName="tb_tipocontato">
+			<column name="id_tipocontato" valueComputed="${sequenceTipoContato}" />
+			<column name="tx_descricao" value="CELULAR" />
+		</insert>
+
+	</changeSet>
+
+	<changeSet id="carga_tb_tipoveiculo" author="jando_server">
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="CICLOMOTOR" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="MOTOCICLETA" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="TRICICLO" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="QUADRICICLO" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="AUTOMÓVEL" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="MICROÔNIBUS" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="ÔNIBUS" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="CARGA" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="COMPETIÇÃO" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="TRATOR DE RODAS" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="TRATOR DE ESTEIRAS" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="TRATOR MISTO" />
+		</insert>
+
+		<insert tableName="tb_tipoveiculo">
+			<column name="id_tipoveiculo" valueComputed="${sequenceTipoVeiculo}" />
+			<column name="tx_descricao" value="COLEÇÃO" />
+		</insert>
+
+	</changeSet>
+
+	<changeSet id="carga_tb_usuario" author="jando_server">
+		<insert tableName="tb_usuario">
+			<column name="id_usuario" valueComputed="${sequenceUsuario}" />
+			<column name="tx_login" value="admin" />
+			<column name="tx_senha" valueComputed="md5('123456')" />
+			<column name="tx_email" value="admin@jando.com" />
+			<column name="dt_cadastro" valueComputed="${now}" />
+			<column name="dt_manutencao" valueComputed="${now}" />
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>
